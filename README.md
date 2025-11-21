@@ -52,6 +52,13 @@ sync-service  | 2025/11/21 03:57:46 Publishing message to broker: {"ChangeType":
 sync-service  | 2025/11/21 03:57:46 Publishing message to broker: {"ChangeType":"event.updated","APISource":"http://events-api:8000","ResourceLocation":"events_db.events.9f0eb01e-9704-458f-b683-e2ad2c23ae2d","Event":{"ID":"9f0eb01e-9704-458f-b683-e2ad2c23ae2d","ExternalID":"evt_2","Title":"Test Event 2","Description":"Second test event","StartsAt":"2025-11-21T04:57:41.454777Z"}}
 ```
 
+### Stopping the stack
+When you're done, stop and remove the containers with:
+```bash
+make down
+```
+This ensures that all Docker containers started by the project are fully stopped and cleaned up,
+
 ## Project Structure
 
 ```text
