@@ -55,49 +55,50 @@ sync-service  | 2025/11/21 03:57:46 Publishing message to broker: {"ChangeType":
 ## Project Structure
 
 ```text
-├── Dockerfile
-├── Makefile
+├── Dockerfile                      # Go sync-service Dockerfile
+├── Makefile                        # dev, down, logs targets
 ├── README.md
 ├── cmd
 │   └── service
-│       └── main.go
-├── docker-compose.yml
+│       └── main.go                 # Entry point: wiring, DI, workers
+├── docker-compose.yml              # Orchestrates mongo, events-api, sync-service
 ├── fastapi_app
-│   ├── Dockerfile
-│   └── main.py
+│   ├── Dockerfile                  # FastAPI Dockerfile
+│   └── main.py                     # /events provider for local dev
 ├── go.mod
 ├── go.sum
 └── internal
-    ├── mocks
+    ├── mocks                       # Simple in-memory mocks for interfaces
     │   └── mock.go
-    ├── models
-    │   ├── event.go
-    │   └── outbox.go
-    ├── providers
+    ├── models                      # Domain models
+    │   ├── event.go                # Event domain model
+    │   └── outbox.go               # Outbox domain model
+    ├── providers                   # External API integration
     │   ├── dtos
-    │   │   └── event.go
-    │   ├── event_api.go
+    │   │   └── event.go            # JSON shape from /events
+    │   ├── event_api.go            # HTTPEventProvider implementation
     │   └── mappers
-    │       └── event_mapper.go
-    ├── repositories
-    │   ├── event_repository.go
+    │       └── event_mapper.go     # DTO -> domain mapper
+    ├── repositories                # Persistence interfaces + Mongo adapters
+    │   ├── event_repository.go     # EventRepository interface
     │   ├── mongo
-    │   │   ├── documents
+    │   │   ├── documents           # Mongo document types
     │   │   │   ├── event_document.go
     │   │   │   └── outbox_document.go
-    │   │   ├── mappers
+    │   │   ├── mappers             # domain <-> document mappers
     │   │   │   ├── event_mapper.go
     │   │   │   └── outbox_mapper.go
     │   │   ├── mongo_event_repository.go
     │   │   ├── mongo_outbox_repository.go
     │   │   └── mongo_transaction_manager.go
-    │   ├── outbox_repository.go
-    │   └── transaction_manager.go
-    ├── services
-    │   ├── event_helpers.go
-    │   ├── event_service.go
-    │   └── logging.go
-    └── workers
-        ├── outbox_worker.go
-        └── sync_worker.go
+    │   ├── outbox_repository.go    # OutboxRepository interface
+    │   └── transaction_manager.go  # TransactionManager interface
+    ├── services                    # Application / domain logic
+    │   ├── event_helpers.go        # Payload struct, hasChanged, helpers
+    │   ├── event_service.go        # SyncEvents implementation
+    │   └── logging.go              # Logging decorator for EventService
+    └── workers                     # Background workers
+        ├── outbox_worker.go        # Reads outbox + calls Producer
+        └── sync_worker.go          # Triggers SyncEvents on an interval
+
 ```
