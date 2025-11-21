@@ -57,7 +57,7 @@ When you're done, stop and remove the containers with:
 ```bash
 make down
 ```
-This ensures that all Docker containers started by the project are fully stopped and cleaned up,
+This ensures that all Docker containers started by the project are fully stopped and cleaned up.
 
 ## Project Structure
 
