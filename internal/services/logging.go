@@ -1,10 +1,9 @@
 package services
 
 import (
+	"context"
 	"log"
 	"time"
-
-	"github.com/abkristanto/go-microservice/internal/models"
 )
 
 type loggingService struct {
@@ -17,11 +16,10 @@ func NewLoggingService(next EventService) EventService {
 	}
 }
 
-func (s *loggingService) SyncEvents(events []models.Event) error {
+func (s *loggingService) SyncEvents(ctx context.Context) error {
 	start := time.Now()
-	log.Printf("SyncEvents called with %d events", len(events))
 
-	err := s.next.SyncEvents(events)
+	err := s.next.SyncEvents(ctx)
 
 	took := time.Since(start)
 
