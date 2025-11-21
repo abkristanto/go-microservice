@@ -64,6 +64,7 @@ func (s *eventService) SyncEvents(ctx context.Context) error {
 			}
 
 			if hasChanged(stored, remote) {
+				remote.ID = stored.ID
 				if err := s.syncEventAndEnqueue(txCtx, remote, "event.updated"); err != nil {
 					return err
 				}
@@ -107,8 +108,8 @@ func (s *eventService) SyncEvents(ctx context.Context) error {
 	})
 }
 
-func (s *eventService) syncEventAndEnqueue(ctx context.Context, remote models.Event, changeType string) error {
-	location, err := s.eventRepo.UpsertEvent(ctx, remote)
+func (s *eventService) syncEventAndEnqueue(ctx context.Context, ev models.Event, changeType string) error {
+	location, err := s.eventRepo.UpsertEvent(ctx, ev)
 	if err != nil {
 		return err
 	}
@@ -117,7 +118,7 @@ func (s *eventService) syncEventAndEnqueue(ctx context.Context, remote models.Ev
 		ChangeType:       changeType,
 		APISource:        s.eventProvider.APISource(),
 		ResourceLocation: location,
-		Event:            remote,
+		Event:            ev,
 	}
 
 	payloadBytes, err := json.Marshal(p)
