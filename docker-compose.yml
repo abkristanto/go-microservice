@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: mongo
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  events-api:
+    build:
+      context: ./fastapi_app
+    container_name: events-api
+    ports:
+      - "8080:8000"  
+
+  sync-service:
+    build:
+      context: .
+    container_name: sync-service
+    depends_on:
+      - mongo
+      - events-api
+    environment:
+      MONGO_URI: mongodb://mongo:27017/?replicaSet=rs0
+      MONGO_DB: events_db
+      EVENTS_COLLECTION: events
+      OUTBOX_COLLECTION: outbox
+      EVENTS_API_BASE_URL: http://events-api:8000
+
+volumes:
+  mongo_data:
