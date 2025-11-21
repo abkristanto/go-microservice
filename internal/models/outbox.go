@@ -8,5 +8,5 @@ type Outbox struct {
 	Payload     []byte
 	RetryCount  int
 	CreatedAt   time.Time
-	ProcessedAt time.Time
+	ProcessedAt *time.Time
 }
